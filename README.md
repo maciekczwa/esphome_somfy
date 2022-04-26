@@ -41,6 +41,13 @@ custom_component:
     return {my_custom}; 
 ```
 
+```
+RFsomfy parameters:
+pin - for example GPIO4
+remote_id - 0x1A7A11
+name - "remote_1" - name of remote to store rolling code, it must be different for every remote you create
+```
+
 The component will create services in homeasssitant.
 ```
 esphome.somfy_up - UP button
