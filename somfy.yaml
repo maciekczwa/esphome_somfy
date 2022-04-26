@@ -1,0 +1,33 @@
+esphome:
+  name: somfy
+  includes:
+  - Somfy.h
+  libraries:
+  - EEPROM
+  - legion2/Somfy_Remote_Lib@^0.4.1
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret ssid_dol
+  password: !secret wifi_password
+
+logger:
+  level: DEBUG
+
+api:
+  password: !secret api_password
+
+ota:
+  password: !secret ota_password
+ 
+custom_component:
+- lambda: |-
+    auto my_custom = new RFsomfy(4, 0x1A7A11, "remote_1");
+    return {my_custom}; 
+
+
+
