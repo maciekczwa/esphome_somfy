@@ -42,10 +42,12 @@ custom_component:
 ```
 
 The component will create services in homeasssitant.
+```
 esphome.somfy_up - UP button
 esphome.somfy_down - DOWN button
 esphome.somfy_stop - STOP/MY button
 esphome.somfy_prog - PROG button
+```
 
 To program the button into receiver for example Somfy Dexxo Optima hold the PROG button on the gate opener for more than two seconds. After the light on the opener turned on call esphome.somfy_prog service to send PROG command from emulated remote to gate opener.
 Now you can use services to esphome.somfy_up, esphome.somfy_down, esphome.somfy_stop open/close/stop gate.
