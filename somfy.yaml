@@ -1,10 +1,8 @@
+external_components:
+  - source: github://maciekczwa/esphome_somfy
+
 esphome:
   name: somfy
-  includes:
-  - Somfy.h
-  libraries:
-  - EEPROM
-  - legion2/Somfy_Remote_Lib@^0.4.1
 
 esp32:
   board: esp32dev
@@ -24,10 +22,12 @@ api:
 ota:
   password: !secret ota_password
  
-custom_component:
-- lambda: |-
-    auto my_custom = new RFsomfy(4, 0x1A7A11, "remote_1");
-    return {my_custom}; 
+remote_transmitter:
+  id: transmitter
+  pin: 4
+  carrier_duty_percent: 100%
 
+somfy:
+  address: 0x1A7A11
 
 
