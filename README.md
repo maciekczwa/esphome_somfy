@@ -31,6 +31,7 @@ api:
   password: !secret api_password
 
 ota:
+  platform: esphome
   password: !secret ota_password
 
 remote_transmitter:
