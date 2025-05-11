@@ -9,13 +9,11 @@ To use this component you will need esp32 and generic 433 MHz transmitter with c
 # Setup
 
 ```yaml
+external_components:
+  - source: github://maciekczwa/esphome_somfy
+
 esphome:
   name: somfy
-  includes:
-  - Somfy.h
-  libraries:
-  - EEPROM
-  - legion2/Somfy_Remote_Lib@^0.4.1
 
 esp32:
   board: esp32dev
@@ -34,18 +32,21 @@ api:
 
 ota:
   password: !secret ota_password
- 
-custom_component:
-- lambda: |-
-    auto my_custom = new RFsomfy(4, 0x1A7A11, "remote_1");
-    return {my_custom}; 
+
+remote_transmitter:
+  id: transmitter
+  pin: 4
+  carrier_duty_percent: 100%
+
+somfy:
+  address: 0x1A7A11
+
 ```
 
-RFsomfy parameters:
+somfy parameters:
 ```
-pin - for example GPIO4
-remote_id - 0x1A7A11
-name - "remote_1" - name of remote to store rolling code, it must be different for every remote you create
+transmitter_id - optional id of transmitter to use
+address - 0x1A7A11
 ```
 
 The component will create services in homeasssitant.
@@ -55,6 +56,8 @@ esphome.somfy_down - DOWN button
 esphome.somfy_stop - STOP/MY button
 esphome.somfy_prog - PROG button
 ```
+
+Currently it is only possible to use one remote with component.
 
 To program the button into receiver for example Somfy Dexxo Optima hold the PROG button on the gate opener for more than two seconds. After the light on the opener turned on call esphome.somfy_prog service to send PROG command from emulated remote to gate opener.
 Now you can use services to esphome.somfy_up, esphome.somfy_down, esphome.somfy_stop open/close/stop gate.
@@ -71,13 +74,13 @@ cover:
         value_template: "{{ states('binary_sensor.garage_sensor')=='on' }}"
         availability_template: "{{ states('binary_sensor.alarm_armed')=='off' }}"
         open_cover:
-          service: esphome.bt_up
+          service: esphome.somfy_up
         close_cover:
-          service: esphome.bt_down
+          service: esphome.somfy_down
         stop_cover:
-          service: esphome.bt_stop
+          service: esphome.somfy_stop
 ```
 
 I use external sensor for determining the state of door. You can use value_template for that.
-I also block the possibility of opening the gate when security alarm is armed. You can use availabilty_template for that.
+I also block the possibility of opening the gate when security alarm is armed. You can use availability_template for that.
 
