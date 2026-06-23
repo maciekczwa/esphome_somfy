@@ -29,6 +29,7 @@ logger:
 
 api:
   password: !secret api_password
+  custom_services: true
 
 ota:
   platform: esphome
