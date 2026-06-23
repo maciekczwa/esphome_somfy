@@ -30,13 +30,12 @@ namespace esphome
       Flag = 0xA
     };
 
-    class RFsomfy : public Component, public api::CustomAPIDevice, public EntityBase, public remote_base::RemoteTransmittable
+    class RFsomfy : public Component, public api::CustomAPIDevice, public remote_base::RemoteTransmittable
     {
 
     private:
       ESPPreferenceObject pref;
       uint32_t remoteId;
-      std::string name;
 
     public:
       RFsomfy()
@@ -46,14 +45,13 @@ namespace esphome
       void set_address(uint32_t _remoteId)
       {
         remoteId = _remoteId;
-        name = str_snprintf("somfy_remote_%d", 32, remoteId);
-        set_object_id(name.c_str());
-        set_name(name.c_str());
       }
 
       void setup() override
       {
-        pref = global_preferences->make_preference<int>(this->get_object_id_hash());
+        std::string object_id = str_snprintf("somfy_remote_%u", 32, remoteId);
+        uint32_t pref_key = esphome::fnv1_hash(object_id);
+        pref = global_preferences->make_preference<uint16_t>(pref_key);
         register_service(&RFsomfy::on_up, "up");
         register_service(&RFsomfy::on_down, "down");
         register_service(&RFsomfy::on_stop, "stop");
@@ -93,10 +91,6 @@ namespace esphome
         pref.save(&rollingCode);
         global_preferences->sync();
 
-        ESP_LOGD(SOMFY_TAG, "name base: %s", this->get_name().c_str());
-        ESP_LOGD(SOMFY_TAG, "objectid: %s", this->get_object_id().c_str());
-        ESP_LOGD(SOMFY_TAG, "objectid: %d", this->get_object_id_hash());
-        ESP_LOGD(SOMFY_TAG, "name: %s", name.c_str());
         ESP_LOGD(SOMFY_TAG, "code :%d", rollingCode);
         uint8_t frame[7];
         buildFrame(frame, command, rollingCode);
